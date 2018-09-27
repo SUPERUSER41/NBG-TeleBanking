@@ -3,10 +3,62 @@
  */
 package nbg.telebanking.database;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+
 /**
- * @author DanG
+ * @author Daneil Greaves
  *
  */
-public abstract class SQLProvider {
+public abstract class SQLProvider<T> {
+	
+	private Connection connection = null;
+	protected Statement statement = null;
+	protected ResultSet result = null;
+	
+	private static final String DRIVER = "com.mysql.jdbc.Driver";
+	
+	private static Logger logger = LogManager.getLogger(SQLProvider.class);
+	
+	
+	public SQLProvider() {
+		try {
+			logger.trace("Attempting to connect to database, errors may occur");
+			Class.forName(DRIVER); 
+			
+			
+			String url = "jdbc:sqlite:nbg_telebanking.sqlite"; 
+			connection = DriverManager.getConnection(url);
+			
+			logger.info("Connected to database");
+			logger.debug( "Connected to database");
+
+		}
+		catch (SQLException e) {
+			logger.error("Unable to connect to database",e);
+		}
+		catch (ClassNotFoundException e) {
+			logger.error("Failed to load JDBC/OBDC Driver",e);
+		}
+		catch (NullPointerException e) {
+			logger.error("Unable not find database",e);
+		}
+	}
+
+	abstract protected void initSQLDatabase();
+	abstract public List<T> selectAll();
+	abstract public T get(int id);
+	abstract public int update(T item, int id);
+	abstract public int delete(int id);
+	abstract public int deleteMultiple(int[] ids);
+	abstract public int add(T item);
 
 }
