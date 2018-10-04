@@ -20,8 +20,9 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class SQLProvider<T> {
 	
-	private Connection connection = null;
+	protected Connection connection = null;
 	protected Statement statement = null;
+	protected String query = null;
 	protected ResultSet result = null;
 	
 	private static final String DRIVER = "com.mysql.jdbc.Driver";
@@ -35,8 +36,10 @@ public abstract class SQLProvider<T> {
 			Class.forName(DRIVER); 
 			
 			
-			String url = "jdbc:sqlite:nbg_telebanking.sqlite"; 
+			String url = "jdbc:sqlite:nbg_telebanking.db"; 
 			connection = DriverManager.getConnection(url);
+			
+			initSQLDatabase();
 			
 			logger.info("Connected to database");
 			logger.debug( "Connected to database");
