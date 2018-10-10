@@ -5,10 +5,14 @@ import java.sql.SQLException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.sql.Connection;
+import java.nbj.telebanking.models.User;
+import java.nbj.telebanking.models.Transactions;
 
 public class QuerySQLProvider extends SQLProvider<Query>
 {
@@ -16,6 +20,7 @@ public class QuerySQLProvider extends SQLProvider<Query>
 	private static Logger logger = LogManager.getLogger(QuerySQLProvider.class);	 
     public static final String TABLE_NAME = "nbg_query";    
     private Connection con = null;
+    private Statement statement=null;
 
     public QuerySQLProvider() {
         super();
@@ -107,7 +112,8 @@ public class QuerySQLProvider extends SQLProvider<Query>
 	}
 
 	@Override
-	public int update(Query item, int id) {
+	public int update(Query item, int id) 
+	{
 		 try{
 	            String query = "UPDATE "+TABLE_NAME
 	                           + " SET queryname= ? "
@@ -174,5 +180,35 @@ public class QuerySQLProvider extends SQLProvider<Query>
        
         return 0;
 	}
+	
+	//Kelcy Hunter.. added this part	
+	
+	/*public void showCustAndCurrBal() 
+	{
+		List<Transaction> transactions = new ArrayList<Transaction>();
+		try {
+			statement = con.createStatement();
+			String query = " SELECT  FROM " +TABLE_NAME ;			
+			
+			logger.debug(query);
+			result = statement.executeQuery(query);
+			while (result.next()) {
+					Transaction transaction = new Transaction(); 
+					transaction.setAmount(result.getInt(1));
+					transaction.setDescription(result.getString(2));
+					transaction.setType(result.getString(3));
+					transaction.setDate(result.getDate(4));
+					
+					transactions.add(transaction);		
+				}
+			logger.debug("Retrieved "+transactions.size()+" transactions");
+			logger.debug(TABLE_NAME+" table already exists");
+		}catch(SQLException  e) {
+			logger.error("Unable to retrieve transactions");
+
+		}
+
+		//return transactions;
+	}*/
 
 }

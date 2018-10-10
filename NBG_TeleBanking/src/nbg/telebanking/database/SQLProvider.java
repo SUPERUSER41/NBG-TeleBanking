@@ -52,7 +52,7 @@ public abstract class SQLProvider<T> {
 			logger.error("Failed to load JDBC/OBDC Driver",e);
 		}
 		catch (NullPointerException e) {
-			logger.error("Unable not find database",e);
+			logger.error("Unable to find database",e);
 		}
 	}
 

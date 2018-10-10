@@ -108,13 +108,15 @@ public class TransactionSQLProvider extends SQLProvider<Transaction>{
 	}
 
 	@Override
-	public int deleteMultiple(int[] ids) {
+	public int deleteMultiple(int[] ids) 
+	{
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public int add(Transaction item) {
+	public int add(Transaction item) 
+	{
 		try{
 			query = "INSERT INTO "+TABLE_NAME+ "(amount, description, type, date)  VALUES (? ? ? ?) ";
 			PreparedStatement ps = connection.prepareStatement(query);
@@ -131,5 +133,31 @@ public class TransactionSQLProvider extends SQLProvider<Transaction>{
 		return 0;
 	}
 	
+	public Transaction getTransPerUser(int id) {
+		Transaction transaction = null;
+		try{
+			statement = connection.createStatement();
+//			query = "SELECT u.first_name, u.last_name, u.image_url FROM "+nbg_users u+" where user_id = "+id;
+			logger.debug("QUERY : "+query);
+			result = statement.executeQuery(query);
+			while(result.next())			
+			{
+				transaction = new Transaction();
+				transaction.setTransID(result.getInt(1));
+				transaction.setAmount(result.getInt(2));
+				transaction.setDescription(result.getString(3));
+				transaction.setType(result.getString(4));
+				transaction.setDate(result.getDate(5));
+			}
+			return transaction;
+			
+			
+		}catch(SQLException e){
+			logger.error("Unable to retrieve user with id "+id,e);
+				
+		}
+		return transaction;
+		
+	}
 
 }
