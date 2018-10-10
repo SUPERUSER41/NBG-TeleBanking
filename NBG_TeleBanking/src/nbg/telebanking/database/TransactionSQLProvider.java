@@ -73,7 +73,7 @@ public class TransactionSQLProvider extends SQLProvider<Transaction>{
 		Transaction transaction = null;
 		try{
 			statement = connection.createStatement();
-//			query = "SELECT t.transaction_id, first_name "+TABLE_NAME+" where user_id = "+id+";";
+			query = "SELECT * FROM "+TABLE_NAME+" where transaction_id = "+id+";";
 			logger.debug("QUERY : "+query);
 			result = statement.executeQuery(query);
 			while(result.next()){
@@ -92,8 +92,9 @@ public class TransactionSQLProvider extends SQLProvider<Transaction>{
 				
 		}
 		return transaction;
-		
 	}
+	
+	
 
 	@Override
 	public int update(Transaction item, int id) {
