@@ -155,10 +155,11 @@ public class TransactionSQLProvider extends SQLProvider<Transaction>{
 				newUser.setlName(result.getString(2));
 				newUser.setImageUrl(result.getString(3));				
 			}
-			return newUser;//getters for User object can be called to output the necessary details to the gui
+			return newUser;//getters for User object can be called to display the necessary details to the gui
 			
 			
-		}catch(SQLException e){
+		}catch(SQLException e)
+		{
 			logger.error("Unable to retrieve user with id "+id+ " because of error "+e);
 				
 		}
