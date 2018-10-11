@@ -11,7 +11,8 @@ import org.apache.logging.log4j.Logger;
 import nbg.telebanking.models.User;
 
 
-public class UserSQLProvider extends SQLProvider<User> {
+public class UserSQLProvider extends SQLProvider<User> 
+{
 	
 	private static Logger logger = LogManager.getLogger(UserSQLProvider.class);
 
@@ -135,6 +136,49 @@ public class UserSQLProvider extends SQLProvider<User> {
 		return 0;
 	}
 	
+	public boolean userLogIn(User account)
+	{
+		int id=0;
+		String dbEmail="";
+		String dbPw="";	
+		boolean isValidUser=false;
+		try
+		{
+			statement=connection.createStatement();
+			String query="SELECT email, password, role_id FROM nbg_users, nbg_users_roles "+
+						" INNER JOIN nbg_user_roles "+ 
+						" ON nbg_users.user_id=nbg_users_roles.user_id";
+			result= statement.executeQuery(query);
+			while(result.next())
+			{
+				dbEmail=result.getString(1);
+				dbPw=result.getString(2);
+				id=result.getInt(3);
+			}
+			if(account.getEmail().equals(dbEmail))
+			{
+				if(account.getPassword().equals(dbPw))
+				{
+					if(account.getUserID()==id)
+					{
+						isValidUser=true;
+					}
+				}
+				
+			}
+			else
+			{
+				System.out.println("Invalid credentials, login failed");
+			}			
+			return isValidUser;
+		}
+		catch(SQLException se)
+		{
+			logger.error("Cannot connect to database");
+			se.printStackTrace();
+		}
+		return isValidUser;
+	}
 	
 
 }
