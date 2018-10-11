@@ -136,9 +136,8 @@ public class TransactionSQLProvider extends SQLProvider<Transaction>{
 	
 	public User custDashInfo(int id) 
 	{
-		//final String tablename2="nbg_users";
-		//current balance for users is missing
-		//needs a thread/runnable interface implementation first
+		//current balance field for users is missing from query
+		//needs a thread extension/runnable implementation first
 		//float currBal;
 		User newUser = null;
 		try{
@@ -166,5 +165,11 @@ public class TransactionSQLProvider extends SQLProvider<Transaction>{
 		return newUser;
 		
 	}
+	
+	/*public Transaction manDashInfo()
+	{
+		//still working on the logic for this method
+		return null;
+	}*/
 
 }

@@ -175,6 +175,7 @@ public class UserSQLProvider extends SQLProvider<User>
 		catch(SQLException se)
 		{
 			logger.error("Cannot connect to database");
+			System.out.println("Could not connect because of database failure");
 			se.printStackTrace();
 		}
 		return isValidUser;
