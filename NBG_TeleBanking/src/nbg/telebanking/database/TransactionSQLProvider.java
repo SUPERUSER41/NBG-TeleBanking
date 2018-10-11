@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import nbg.telebanking.models.User;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -133,30 +134,36 @@ public class TransactionSQLProvider extends SQLProvider<Transaction>{
 		return 0;
 	}
 	
-	public Transaction getTransPerUser(int id) {
-		Transaction transaction = null;
+	public User custDashInfo(int id) 
+	{
+		//final String tablename2="nbg_users";
+		//current balance for users is missing
+		//needs a thread/runnable interface implementation first
+		//float currBal;
+		User newUser = null;
 		try{
 			statement = connection.createStatement();
-//			query = "SELECT u.first_name, u.last_name, u.image_url FROM "+nbg_users u+" where user_id = "+id;
+			String query = "SELECT first_name, last_name, image_url FROM nbg_users"+
+					" INNER JOIN nbg_transactions "+ 
+					" ON nbg_users.user_id=nbg_transactions.user_id "+
+					" where nbg_user.user_id = "+id;
 			logger.debug("QUERY : "+query);
 			result = statement.executeQuery(query);
 			while(result.next())			
 			{
-				transaction = new Transaction();
-				transaction.setTransID(result.getInt(1));
-				transaction.setAmount(result.getInt(2));
-				transaction.setDescription(result.getString(3));
-				transaction.setType(result.getString(4));
-				transaction.setDate(result.getDate(5));
+				newUser = new User();
+				newUser.setfName(result.getString(1));
+				newUser.setlName(result.getString(2));
+				newUser.setImageUrl(result.getString(3));				
 			}
-			return transaction;
+			return newUser;//getters for User object can be called to output the necessary details to the gui
 			
 			
 		}catch(SQLException e){
-			logger.error("Unable to retrieve user with id "+id,e);
+			logger.error("Unable to retrieve user with id "+id+ " because of error "+e);
 				
 		}
-		return transaction;
+		return newUser;
 		
 	}
 
