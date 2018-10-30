@@ -57,11 +57,12 @@ public abstract class SQLProvider<T> {
 	}
 
 	abstract protected void initSQLDatabase();
-	abstract public List<T> selectAll();
-	abstract public T get(int id);
-	abstract public int update(T item, int id);
-	abstract public int delete(int id);
-	abstract public int deleteMultiple(int[] ids);
-	abstract public int add(T item);
+	abstract public int create(T t);
+	abstract public int update(T t, int id);
+	abstract public T retrieve(int id);
+	abstract public List<T> retrieveAll();
+	
+	
+	
 
 }
