@@ -37,11 +37,35 @@ public class TransactionSQLProvider extends SQLProvider<Transaction>{
 			logger.error("Unable to initialize SQL Database with table " + TABLE_NAME , e);
 		}
 		
-		
 	}
+	
 
 	@Override
-	public List<Transaction> selectAll() {
+	public int create(Transaction item) {
+		try{
+			query = "INSERT INTO "+TABLE_NAME+ "(amount, description, type, date)  VALUES (? ? ? ?) ";
+			PreparedStatement ps = connection.prepareStatement(query);
+			ps.setInt(1, item.getAmount());
+			ps.setString(2, item.getDescription());
+			ps.setString(3, item.getType());
+			ps.setDate(4, item.getDate());
+			return ps.executeUpdate();
+    	}catch(SQLException e){
+			logger.error("Unable to add transaction",e);
+		}
+		
+		return 0;
+	}
+	
+	@Override
+	public int update(Transaction item, int id) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+
+	@Override
+	public List<Transaction> retrieveAll() {
 		List<Transaction> transactions = new ArrayList<Transaction>();
 		try {
 			statement = connection.createStatement();
@@ -69,7 +93,7 @@ public class TransactionSQLProvider extends SQLProvider<Transaction>{
 	}
 
 	@Override
-	public Transaction get(int id) {
+	public Transaction retrieve(int id) {
 		Transaction transaction = null;
 		try{
 			statement = connection.createStatement();
@@ -88,49 +112,12 @@ public class TransactionSQLProvider extends SQLProvider<Transaction>{
 			
 			
 		}catch(SQLException e){
-			logger.error("Unable to retrieve user with id "+id,e);
+			logger.error("Unable to retrieve transaction with id "+id,e);
 				
 		}
 		return transaction;
 	}
 	
-	
-
-	@Override
-	public int update(Transaction item, int id) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int delete(int id) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int deleteMultiple(int[] ids) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int add(Transaction item) {
-		try{
-			query = "INSERT INTO "+TABLE_NAME+ "(amount, description, type, date)  VALUES (? ? ? ?) ";
-			PreparedStatement ps = connection.prepareStatement(query);
-			ps.setInt(1, item.getAmount());
-			ps.setString(2, item.getDescription());
-			ps.setString(3, item.getType());
-			ps.setDate(4, item.getDate());
-			return ps.executeUpdate();
-					
-    	}catch(SQLException e){
-			logger.error("Unable to add transaction",e);
-		}
-		
-		return 0;
-	}
 	
 
 }

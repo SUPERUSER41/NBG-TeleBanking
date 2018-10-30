@@ -22,15 +22,16 @@ public class UserSQLProvider extends SQLProvider<User> {
 	protected void initSQLDatabase() {
 		try {
 			statement = connection.createStatement();
-			query = "create table if not exists "
+			query = "CREATE TABLE IF NOT EXISTS "
 					+ TABLE_NAME
-					+ " (user_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+					+ "user_id INTEGER PRIMARY KEY AUTOINCREMENT,"
 					+ "first_name varchar(50) NOT NULL,"
 					+ "last_name varchar(50) NOT NULL,"
 					+ "email varchar(50) NOT NULL,"
-					+ "password varchar(50) NOT NULL, "
-					+ "image_url varchar(50) NOT NULL, "
-					+ "created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL";
+					+ "password varchar(50) NOT NULL,"
+					+ "image_url varchar(50), "
+					+ "created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+					+ "FOREIGN KEY(role_id) REFERENCES nbg_roles(role_id)";
 			if (statement.execute(query)) {
 				logger.debug(TABLE_NAME+" table created");
 			} else {
@@ -42,9 +43,45 @@ public class UserSQLProvider extends SQLProvider<User> {
 		}
 		
 	}
+	
+	@Override
+	public int create(User user) {
+		try{
+			query = "INSERT INTO "+TABLE_NAME+ "(first_name, last_name, email, password)  VALUES (? ? ? ? ?) ";
+			PreparedStatement ps = connection.prepareStatement(query);
+			ps.setString(1, user.getfName());
+			ps.setString(2, user.getlName());
+			ps.setString(3, user.getEmail());
+			ps.setString(4, user.getPassword());
+			return ps.executeUpdate();
+					
+    	}catch(SQLException e){
+			logger.error("Unable to add user",e);
+		}
+		
+		return 0;
+	}
+	
+	@Override
+	public int update(User user, int id) {
+		try{
+			String query = "UPDATE "+TABLE_NAME
+					       + " SET image_url = ? "
+					       + " WHERE id = ? ";
+			PreparedStatement ps = connection.prepareStatement(query);
+			ps.setString(5, user.getImageUrl());
+			return ps.executeUpdate();
+			
+    	}catch(SQLException e){
+			logger.error("Unable to update user with id "+id,e);
+		}
+		
+		return 0;
+	}
+	
 
 	@Override
-	public List<User> selectAll() {
+	public List<User> retrieveAll() {
 		List<User> users = new ArrayList<User>();
 		try {
 			statement = connection.createStatement();
@@ -54,12 +91,12 @@ public class UserSQLProvider extends SQLProvider<User> {
 			result = statement.executeQuery(query);
 			while (result.next()) {
 					User user = new User(); 
-					user.setUserID(result.getInt(1));
+					user.setUserID(result.getInt(0));
+					user.setfName(result.getString(1));
 					user.setfName(result.getString(2));
-					user.setfName(result.getString(3));
-					user.setEmail(result.getString(4));
-					user.setImageUrl(result.getString(6));
-					user.setCreatedAt(result.getDate(7));
+					user.setEmail(result.getString(3));
+					user.setImageUrl(result.getString(5));
+					user.setCreatedAt(result.getDate(6));
 					users.add(user);		
 				}
 			logger.debug("Retrieved "+users.size()+" users");
@@ -72,7 +109,7 @@ public class UserSQLProvider extends SQLProvider<User> {
 	}
 
 	@Override
-	public User get(int id) {
+	public User retrieve(int id) {
 		User user = null;
 		try{
 			statement = connection.createStatement();
@@ -81,11 +118,11 @@ public class UserSQLProvider extends SQLProvider<User> {
 			result = statement.executeQuery(query);
 			while(result.next()){
 				user = new User();
-				user.setUserID(result.getInt(1));
+				user.setUserID(result.getInt(0));
+				user.setfName(result.getString(1));
 				user.setfName(result.getString(2));
-				user.setfName(result.getString(3));
-				user.setEmail(result.getString(4));
-				user.setImageUrl(result.getString(6));
+				user.setEmail(result.getString(3));
+				user.setImageUrl(result.getString(5));
 			}
 			
 			return user;
@@ -98,42 +135,11 @@ public class UserSQLProvider extends SQLProvider<User> {
 		return user;
 	}
 
-	@Override
-	public int update(User item, int id) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	
 
-	@Override
-	public int delete(int id) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	
 
-	@Override
-	public int deleteMultiple(int[] ids) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
-	@Override
-	public int add(User item) {
-		try{
-			query = "INSERT INTO "+TABLE_NAME+ "(first_name, last_name, email, password, created_at)  VALUES (? ? ? ? ?) ";
-			PreparedStatement ps = connection.prepareStatement(query);
-			ps.setString(1, item.getfName());
-			ps.setString(2, item.getlName());
-			ps.setString(3, item.getEmail());
-			ps.setString(4, item.getPassword());
-			ps.setDate(5, item.getCreatedAt());
-			return ps.executeUpdate();
-					
-    	}catch(SQLException e){
-			logger.error("Unable to add user",e);
-		}
-		
-		return 0;
-	}
 	
 	
 
