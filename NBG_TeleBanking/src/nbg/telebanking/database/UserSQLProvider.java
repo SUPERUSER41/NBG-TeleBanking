@@ -9,15 +9,17 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import nbg.telebanking.models.User;
+import nbg.telebanking.models.Customer;
 
 
-public class UserSQLProvider extends SQLProvider<User> 
+
+public abstract class UserSQLProvider extends SQLProvider<User>
 {
 	
 	private static Logger logger = LogManager.getLogger(UserSQLProvider.class);
 
 	public static final String TABLE_NAME = "nbg_user";
-	
+	private Customer customer;
 
 	@Override
 	protected void initSQLDatabase() {
@@ -50,9 +52,9 @@ public class UserSQLProvider extends SQLProvider<User>
 		try{
 			query = "INSERT INTO "+TABLE_NAME+ "(first_name, last_name, email, password)  VALUES (? ? ? ? ?) ";
 			PreparedStatement ps = connection.prepareStatement(query);
-			ps.setString(1, user.getfName());
-			ps.setString(2, user.getlName());
-			ps.setString(3, user.getEmail());
+			ps.setString(1, user.getFirstName());
+			ps.setString(2, user.getLastName());
+			ps.setString(3, user.getEmailAddress());
 			ps.setString(4, user.getPassword());
 			return ps.executeUpdate();
 					
@@ -63,14 +65,14 @@ public class UserSQLProvider extends SQLProvider<User>
 		return 0;
 	}
 	
-	@Override
-	public int update(User user, int id) {
+//	@Override
+	public int update(Customer user, int id) {
 		try{
 			String query = "UPDATE "+TABLE_NAME
 					       + " SET image_url = ? "
 					       + " WHERE id = ? ";
 			PreparedStatement ps = connection.prepareStatement(query);
-			ps.setString(5, user.getImageUrl());
+			ps.setString(5, user.getImageURL());
 			return ps.executeUpdate();
 			
     	}catch(SQLException e){
@@ -84,6 +86,7 @@ public class UserSQLProvider extends SQLProvider<User>
 	@Override
 	public List<User> retrieveAll() {
 		List<User> users = new ArrayList<User>();
+		Customer customer=new Customer();
 		try {
 			statement = connection.createStatement();
 			query = "SELECT * FROM " +TABLE_NAME;
@@ -92,13 +95,13 @@ public class UserSQLProvider extends SQLProvider<User>
 			result = statement.executeQuery(query);
 			while (result.next()) {
 					User user = new User(); 
-					user.setUserID(result.getInt(0));
-					user.setfName(result.getString(1));
-					user.setfName(result.getString(2));
-					user.setEmail(result.getString(3));
-					user.setImageUrl(result.getString(5));
+					user.setUserId(result.getInt(0));
+					user.setFirstName(result.getString(1));
+					user.setLastName(result.getString(2));
+					user.setEmailAddress(result.getString(3));
+					customer.setImageURL(result.getString(5));
 					user.setCreatedAt(result.getDate(6));
-					users.add(user);		
+					users.add(user);
 				}
 			logger.debug("Retrieved "+users.size()+" users");
 			logger.debug(TABLE_NAME+" table already exists");
@@ -119,11 +122,11 @@ public class UserSQLProvider extends SQLProvider<User>
 			result = statement.executeQuery(query);
 			while(result.next()){
 				user = new User();
-				user.setUserID(result.getInt(0));
-				user.setfName(result.getString(1));
-				user.setfName(result.getString(2));
-				user.setEmail(result.getString(3));
-				user.setImageUrl(result.getString(5));
+				user.setUserId(result.getInt(0));
+				user.setFirstName(result.getString(1));
+				user.setLastName(result.getString(2));
+				user.setEmailAddress(result.getString(3));
+				customer.setImageURL(result.getString(5));
 			}
 			
 			return user;
@@ -136,15 +139,9 @@ public class UserSQLProvider extends SQLProvider<User>
 		return user;
 	}
 
-	
-
-	
-
-
-	
 	public boolean userLogIn(User account)
 	{
-		int id=account.getUserID();
+		int id=account.getUserId();
 		String dbEmail="";
 		String dbPw="";	
 		boolean isValidUser=false;
@@ -162,11 +159,11 @@ public class UserSQLProvider extends SQLProvider<User>
 				dbPw=result.getString(2);
 				id=result.getInt(3);
 			
-				if(account.getEmail().equals(dbEmail))
+				if(account.getEmailAddress().equals(dbEmail))
 				{
 					if(account.getPassword().equals(dbPw))
 					{
-						if(account.getUserID()==id)
+						if(account.getUserId()==id)
 						{
 							isValidUser=true;
 						}

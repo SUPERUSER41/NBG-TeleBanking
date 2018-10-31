@@ -1,9 +1,12 @@
 package nbg.telebanking.database;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import nbg.telebanking.models.Customer;
 import nbg.telebanking.models.User;
 
 import org.apache.logging.log4j.LogManager;
@@ -11,11 +14,13 @@ import org.apache.logging.log4j.Logger;
 
 import nbg.telebanking.models.Transaction;
 
+
 public class TransactionSQLProvider extends SQLProvider<Transaction>{
 
 	private static Logger logger = LogManager.getLogger(UserSQLProvider.class);
 
 	public static final String TABLE_NAME = "nbg_transactions";
+	private Customer customer;
 	
 	@Override
 	protected void initSQLDatabase() {
@@ -39,35 +44,24 @@ public class TransactionSQLProvider extends SQLProvider<Transaction>{
 		}
 		
 	}
-	
 
 	@Override
 	public int create(Transaction item) {
 		try{
 			query = "INSERT INTO "+TABLE_NAME+ "(amount, description, type, date)  VALUES (? ? ? ?) ";
 			PreparedStatement ps = connection.prepareStatement(query);
-			ps.setInt(1, item.getAmount());
+			ps.setDouble(1, item.getTransAmt());
 			ps.setString(2, item.getDescription());
-			ps.setString(3, item.getType());
-			ps.setDate(4, item.getDate());
+			ps.setString(3, item.getTransType());
+			ps.setDate(4, (Date) item.getDate());
 			return ps.executeUpdate();
     	}catch(SQLException e){
 			logger.error("Unable to add transaction",e);
 		}
-		
 		return 0;
 	}
-<<<<<<< Updated upstream
-	
-	@Override
-	public int update(Transaction item, int id) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	
 
-=======
->>>>>>> Stashed changes
+
 	@Override
 	public List<Transaction> retrieveAll() {
 		List<Transaction> transactions = new ArrayList<Transaction>();
@@ -79,9 +73,9 @@ public class TransactionSQLProvider extends SQLProvider<Transaction>{
 			result = statement.executeQuery(query);
 			while (result.next()) {
 					Transaction transaction = new Transaction(); 
-					transaction.setAmount(result.getInt(1));
+					transaction.setTransAmt(result.getInt(1));
 					transaction.setDescription(result.getString(2));
-					transaction.setType(result.getString(3));
+					transaction.setTransType(result.getString(3));
 					transaction.setDate(result.getDate(4));
 					
 					transactions.add(transaction);		
@@ -90,9 +84,7 @@ public class TransactionSQLProvider extends SQLProvider<Transaction>{
 			logger.debug(TABLE_NAME+" table already exists");
 		}catch(SQLException  e) {
 			logger.error("Unable to retrieve transactions");
-
 		}
-
 		return transactions;
 	}
 
@@ -106,34 +98,42 @@ public class TransactionSQLProvider extends SQLProvider<Transaction>{
 			result = statement.executeQuery(query);
 			while(result.next()){
 				transaction = new Transaction();
-				transaction.setTransID(result.getInt(1));
-				transaction.setAmount(result.getInt(2));
+				transaction.setTransactionId((result.getInt(1)));
+				transaction.setTransAmt(result.getInt(2));
 				transaction.setDescription(result.getString(3));
-				transaction.setType(result.getString(4));
+				transaction.setTransType(result.getString(4));
 				transaction.setDate(result.getDate(5));
 			}
 			return transaction;
-			
-			
 		}catch(SQLException e){
 			logger.error("Unable to retrieve transaction with id "+id,e);
 				
 		}
 		return transaction;
-<<<<<<< HEAD
-	}
+
 	
-	
-=======
-		
+
+
 	}
+
 
 	@Override
 	public int update(Transaction item, int id) {
-		// TODO Auto-generated method stub
+	    /*
+	    * @author Jevonne Laing*/
+		try{
+
+		    String query="UPDATE "+TABLE_NAME+"SET id=?"+"where id=?";
+		    PreparedStatement ps=connection.prepareStatement(query);
+		    ps.setInt(1,item.getTransactionId());
+		    return ps.executeUpdate();
+        }catch (SQLException e){
+		    e.printStackTrace();
+            logger.error("Unable to update Transaction with id "+id,e);
+        }
 		return 0;
 	}
-
+/*
 	@Override
 	public int delete(int id) {
 		// TODO Auto-generated method stub
@@ -153,10 +153,10 @@ public class TransactionSQLProvider extends SQLProvider<Transaction>{
 		try{
 			query = "INSERT INTO "+TABLE_NAME+ "(amount, description, type, date)  VALUES (? ? ? ?) ";
 			PreparedStatement ps = connection.prepareStatement(query);
-			ps.setInt(1, item.getAmount());
+			ps.setDouble(1, item.getTransAmt());
 			ps.setString(2, item.getDescription());
-			ps.setString(3, item.getType());
-			ps.setDate(4, item.getDate());
+			ps.setString(3, item.getTransType());
+			ps.setDate(4, (Date) item.getDate());
 			return ps.executeUpdate();
 					
     	}catch(SQLException e){
@@ -165,6 +165,7 @@ public class TransactionSQLProvider extends SQLProvider<Transaction>{
 		
 		return 0;
 	}
+	*/
 	
 	public User custDashInfo(int id) 
 	{
@@ -183,9 +184,9 @@ public class TransactionSQLProvider extends SQLProvider<Transaction>{
 			while(result.next())			
 			{
 				newUser = new User();
-				newUser.setfName(result.getString(1));
-				newUser.setlName(result.getString(2));
-				newUser.setImageUrl(result.getString(3));				
+				newUser.setFirstName(result.getString(1));
+				newUser.setLastName(result.getString(2));
+				customer.setImageURL(result.getString(3));
 			}
 			return newUser;//getters for User object can be called to display the necessary details to the gui
 			
@@ -204,6 +205,6 @@ public class TransactionSQLProvider extends SQLProvider<Transaction>{
 		//still working on the logic for this method
 		return null;
 	}*/
->>>>>>> develop
+//>>>>>>> develop
 
 }

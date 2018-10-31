@@ -46,8 +46,8 @@ public class MessageSQLProvider extends SQLProvider<Message>{
 		try{
 			query = "INSERT INTO "+TABLE_NAME+ "(body, query)  VALUES (?) ";
 			PreparedStatement ps = connection.prepareStatement(query);
-			ps.setString(1, message.getMsgBody());
-			ps.setString(2, message.getQuery());
+			ps.setString(1, message.getBody());
+			ps.setString(2, message.getQuery_type());
 			return ps.executeUpdate();
 					
     	}catch(SQLException e){
@@ -73,10 +73,10 @@ public class MessageSQLProvider extends SQLProvider<Message>{
 			result = statement.executeQuery(query);
 			while(result.next()){
 				msg = new Message();
-				msg.setMsgID(result.getInt(0));
-				msg.setMsgBody(result.getString(1));
-				msg.setQuery(result.getString(2));
-				msg.setDateSent(result.getDate(3));
+				msg.setMess_id(result.getInt(0));
+				msg.setBody(result.getString(1));
+				msg.setQuery_type(result.getString(2));
+				//msg.setDateSent(result.getDate(3));
 			}
 			return msg;
 			
@@ -97,10 +97,10 @@ public class MessageSQLProvider extends SQLProvider<Message>{
 			result = statement.executeQuery(query);
 			while (result.next()) {
 					Message msg = new Message(); 
-					msg.setMsgID(result.getInt(0));
-					msg.setMsgBody(result.getString(1));
-					msg.setQuery(result.getString(2));
-					msg.setDateSent(result.getDate(3));
+					msg.setMess_id(result.getInt(0));
+					msg.setBody(result.getString(1));
+					msg.setQuery_type(result.getString(2));
+					//msg.setDateSent(result.getDate(3));
 					msgs.add(msg);		
 				}
 			logger.debug("Retrieved "+msgs.size()+" users");

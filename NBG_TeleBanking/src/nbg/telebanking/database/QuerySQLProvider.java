@@ -62,55 +62,15 @@ public class QuerySQLProvider extends SQLProvider<Query>
 	        }
 		
 	}
-	@Override
-	public List<Query> selectAll() {
-		List<Query> items = new ArrayList<Query>();
-		 
-        try {
-            statement = con.createStatement(); 
-            String query = "SELECT * FROM " + TABLE_NAME;
-                                                            
-            logger.debug(query);
-            result = statement.executeQuery(query); 
-  
-            while (result.next()) 
-            {
-                Query item = new Query(); 
-                item.setQuery_id(result.getInt(1)); 
-                item.setQueryname(result.getString(2)); 
- 
-                items.add(item);
-               
-            }
-            logger.debug("Retrieved "+items.size()+" query");
-        } catch (SQLException e) {
-            logger.error("Unable to retrieve query",e);
- 
-        }
-        return items;
-	}
 
 	@Override
-	public Query get(int id) {
-		Query item = null;
-        try{
-            statement = con.createStatement();
-            String query = "select * from "+TABLE_NAME+" where query_id = "+id+";";
-            logger.debug("QUERY : "+query);
-            result = statement.executeQuery(query);
-            while(result.next()){
-                item = new Query();
-                item.setQuery_id(result.getInt(1)); 
-                item.setQueryname(result.getString(2)); 
-            }
-           
-            return item;
-        }catch(SQLException e){
-            logger.error("Unable to retrieve query with id "+item.getQuery_id(),e);
-               
-        }
-        return item;
+	public int create(Query query) {
+		return 0;
 	}
+
+
+
+
 
 	@Override
 	public int update(Query item, int id) 
@@ -133,54 +93,15 @@ public class QuerySQLProvider extends SQLProvider<Query>
 	}
 
 	@Override
-	public int delete(int id) 
-	{
-		try{
-            String query = "DELETE FROM "+TABLE_NAME
-                           + " WHERE query_id = ? ";
-            PreparedStatement ps = con.prepareStatement(query);
-            ps.setInt(1,id);
-            return ps.executeUpdate();
-                   
-        }catch(SQLException e){
-     }
-       
-        return 0;
+	public Query retrieve(int id) {
+		return null;
 	}
 
 	@Override
-	public int deleteMultiple(int[] ids) {
-		try{
-            String IdsConcatenated = Arrays.toString(ids).replace("[","").replace("]","");
-            String query = "DELETE FROM "+TABLE_NAME
-                           + " WHERE query_id in ("+IdsConcatenated+") ";
-            PreparedStatement ps = con.prepareStatement(query);
-           
-            return ps.executeUpdate();
-                   
-        }catch(SQLException e){
-            logger.error("Unable to delete Query with ids : "+Arrays.toString(ids),e);
-        }
-       
-        return 0;
+	public List<Query> retrieveAll() {
+		return null;
 	}
 
-	@Override
-	public int add(Query item) 
-	{
-		try{
-            String query = "INSERT INTO "+TABLE_NAME
-                           + "(query_id, queryname)  VALUES (?,?) ";
-            PreparedStatement ps = con.prepareStatement(query);
-            ps.setInt(1, item.getQuery_id());
-            ps.setString(2, item.getQueryname());
-            return ps.executeUpdate();
-                   
-        }catch(SQLException e){
-            logger.error("Unable to add query",e);
-        }
-       
-        return 0;
-	}
+
 
 }
