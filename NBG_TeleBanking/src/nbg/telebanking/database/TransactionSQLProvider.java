@@ -57,6 +57,7 @@ public class TransactionSQLProvider extends SQLProvider<Transaction>{
 		
 		return 0;
 	}
+<<<<<<< Updated upstream
 	
 	@Override
 	public int update(Transaction item, int id) {
@@ -65,6 +66,8 @@ public class TransactionSQLProvider extends SQLProvider<Transaction>{
 	}
 	
 
+=======
+>>>>>>> Stashed changes
 	@Override
 	public List<Transaction> retrieveAll() {
 		List<Transaction> transactions = new ArrayList<Transaction>();
