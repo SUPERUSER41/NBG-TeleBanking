@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="lib/log4j-core-2.8.jar"/>
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.40-bin.jar"/>
 	<classpathentry kind="lib" path="lib/sqlite-jdbc-3.16.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/NBG_TeleBanking_Lib"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration monitorinterval="30" status="info" strict="true">
+    <Properties>
+        <Property name="ServerLog">log/NBGT_Server.log</Property>
+        <Property name="ClientLog">log/NBGT_Client.log</Property>
+        <Property name="">log/NBGT_SQLProvider.log</Property>
+    </Properties>
+    <Appenders>
+        <!-- General Appenders -->
+
+        <Appender type="Console" name="ConsoleAppender">
+            <Layout type="PatternLayout" pattern="%d %p [%t] %m%n" />
+        </Appender>
+        <Appender type="File" name="FileAppender" fileName="${ServerLog}">
+            <Layout type="PatternLayout" pattern="%d %p %C [%t] %m%n" />
+        </Appender>
+        <!-- /General Appenders -->
+        <!-- MainSample Specific Appenders -->
+        <Appender type="File" name="SampleFileAppender" fileName="${sampleLogFileName}">
+            <Layout type="PatternLayout" pattern="%d %p %C [%t] %m%n" />
+        </Appender>
+        <!-- /MainSample Appenders -->
+    </Appenders>
+    <Loggers>
+        <Root level="debug">
+            <AppenderRef ref="ConsoleAppender" />
+            <AppenderRef ref="FileAppender" />
+        </Root>
+        <Logger name="NBGT. sample" level="all" additivity="false">
+            <AppenderRef ref="SampleFileAppender"/>
+            <AppenderRef ref="ConsoleAppender" />
+        </Logger>
+    </Loggers>
+</Configuration>
